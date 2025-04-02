@@ -2,6 +2,21 @@ import streamlit as st
 from sheets_helper import add_record, get_records, update_record, delete_record
 from datetime import date
 import re
+import json
+# ========== UI ==========
+st.set_page_config(page_title="IPTV Client Manager", layout="wide")
+st.title("📺 IPTV Client Manager")
+
+# ========== Secrets Debug (You can remove this after it works) ==========
+try:
+    creds_test = st.secrets["gcp_service_account"]
+    st.sidebar.success("✅ Secrets loaded.")
+    st.sidebar.write("📁 Project ID:", creds_test.get("project_id", "Missing"))
+    st.sidebar.write("📧 Client Email:", creds_test.get("client_email", "Missing"))
+    st.sidebar.write("🔑 Key (start):", creds_test.get("private_key", "Missing")[:30] + "...")
+except Exception as e:
+    st.sidebar.error("❌ Failed to load secrets.")
+    st.sidebar.write(e)
 
 # ========== Helpers ==========
 
@@ -16,9 +31,6 @@ def cached_get_records():
 def safe_for_dataframe(records):
     return [{k: str(v) if v is not None else "" for k, v in row.items()} for row in records]
 
-# ========== UI ==========
-st.set_page_config(page_title="IPTV Client Manager", layout="wide")
-st.title("📺 IPTV Client Manager")
 
 tab1, tab2, tab3, tab4 = st.tabs(["➕ Add New", "📋 View All", "✏️ Edit", "🗑 Delete"])
 
@@ -40,6 +52,10 @@ with tab1:
         mac = mac.strip().upper()
         if mac and not is_valid_mac(mac):
             st.error("Invalid MAC Address! Use format: 00:1A:2B:3C:4D:5E")
+        elif not all([name, phone, link]):
+            st.error("Please fill in all required fields.")
+        elif end_date <= start_date:
+            st.error("End Date must be after Start Date.")
         else:
             record = [name, phone, start_date.isoformat(), link, end_date.isoformat(), mac, cost, sell, profit]
             add_record(record)
@@ -83,6 +99,8 @@ with tab3:
             mac = mac.strip().upper()
             if mac and not is_valid_mac(mac):
                 st.error("Invalid MAC Address! Use format: 00:1A:2B:3C:4D:5E")
+            elif end_date <= start_date:
+                st.error("End Date must be after Start Date.")
             else:
                 new_data = [name, phone, start_date.isoformat(), link, end_date.isoformat(), mac, cost, sell, profit]
                 update_record(index, new_data)
