@@ -1,20 +1,17 @@
 import gspread
 from google.oauth2.service_account import Credentials
-import json
 import streamlit as st
 
-SHEET_NAME = "IPTV"
-SHEET_TAB = "Klientet"
+scope = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
 def get_sheet():
-    scope = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
     creds_dict = st.secrets["gcp_service_account"]
     creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
     client = gspread.authorize(creds)
-    sheet = client.open(SHEET_NAME).worksheet(SHEET_TAB)
+    sheet = client.open("IPTV").worksheet("Klientet")
     return sheet
 
 def add_record(record):
