@@ -7,16 +7,16 @@ import json
 st.set_page_config(page_title="IPTV Client Manager", layout="wide")
 st.title("📺 IPTV Client Manager")
 
-# ========== Secrets Debug (You can remove this after it works) ==========
-try:
-    creds_test = st.secrets["gcp_service_account"]
-    st.sidebar.success("✅ Secrets loaded.")
-    st.sidebar.write("📁 Project ID:", creds_test.get("project_id", "Missing"))
-    st.sidebar.write("📧 Client Email:", creds_test.get("client_email", "Missing"))
-    st.sidebar.write("🔑 Key (start):", creds_test.get("private_key", "Missing")[:30] + "...")
-except Exception as e:
-    st.sidebar.error("❌ Failed to load secrets.")
-    st.sidebar.write(e)
+# # ========== Secrets Debug (You can remove this after it works) ==========
+# try:
+#     creds_test = st.secrets["gcp_service_account"]
+#     st.sidebar.success("✅ Secrets loaded.")
+#     st.sidebar.write("📁 Project ID:", creds_test.get("project_id", "Missing"))
+#     st.sidebar.write("📧 Client Email:", creds_test.get("client_email", "Missing"))
+#     st.sidebar.write("🔑 Key (start):", creds_test.get("private_key", "Missing")[:30] + "...")
+# except Exception as e:
+#     st.sidebar.error("❌ Failed to load secrets.")
+#     st.sidebar.write(e)
 
 # ========== Helpers ==========
 
